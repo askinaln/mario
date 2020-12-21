@@ -72,8 +72,26 @@ class Player(Sprite):
         self.pos = (pos_x, pos_y)
 
     def move(self, x, y):
-        self.pos = x, y
-        self.rect = self.image.get_rect().move(x * tile_width + 10, y * tile_height + 10)
+        camera.dx -= tile_width * (x - self.pos[0])
+        camera.dy -= tile_height * (y - self.pos[1])
+        self.pos = (x, y)
+        for sprite in sprite_group:
+            camera.apply(sprite)
+
+
+class Camera:
+    def __init__(self):
+        self.dx = 0
+        self.dy = 0
+
+    def apply(self, obj):
+        obj.rect.x = obj.abs_pos[0] + self.dx
+        obj.rect.y = obj.abs_pos[1] + self.dy
+
+    def update(self, target):
+        self.dx = 0
+        self.dy = 0
+
 
 
 player = None
@@ -157,6 +175,7 @@ def move(hero, movement):
 
 
 start_screen()
+camera = Camera()
 level_map = load_level(map_file)
 hero, max_x, max_y = generate_level(level_map)
 while running:

@@ -2,7 +2,10 @@ import pygame
 import os
 import sys
 
-map_file = "map.map"
+map_file = input()
+if not os.path.isfile(os.path.join('data', map_file)):
+    print('Карта не найдена')
+    sys.exit()
 
 
 def load_image(name, color_key=None):
